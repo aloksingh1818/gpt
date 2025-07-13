@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Vault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF9D00;
+            --primary-hover: #FFA500;
+            --secondary-color: #FFB84D;
+            --text-color: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --bg-color: #0A0A0A;
+            --card-bg: #1A1A1A;
+            --border-color: #2A2A2A;
+            --gradient-start: #FF9D00;
+            --gradient-end: #FFA500;
+            --shadow-color: rgba(255, 157, 0, 0.15);
+        }
+
+        [data-theme="light"] {
+            --text-color: #1A1A1A;
+            --text-secondary: rgba(26, 26, 26, 0.7);
+            --bg-color: #FFFFFF;
+            --card-bg: #F5F5F5;
+            --border-color: #E0E0E0;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Inter', sans-serif; 
+        }
+        
+        body {
+            width: 320px;
+            background: linear-gradient(135deg, #0A0A0A, #1A1A1A);
+            color: var(--text-color);
+            padding: 16px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px var(--shadow-color);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            display: block;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            animation: slideDown 0.4s ease;
+            padding: 12px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            width: 36px;
+            height: 36px;
+            animation: pulse 2s infinite;
+            filter: drop-shadow(0 2px 8px var(--shadow-color));
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .logo h1 {
+            font-size: 22px;
+            color: var(--text-color);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .icon-button {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .icon-button:hover {
+            transform: scale(1.1);
+            background: var(--primary-color);
+            color: var(--bg-color);
+        }
+
+        .input-group {
+            position: relative;
+            margin: 16px 0;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        #cookieValue {
+            width: 100%;
+            padding: 14px;
+            padding-right: 45px;
+            font-size: 14px;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #cookieValue:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px var(--shadow-color);
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 16px 0;
+            animation: slideUp 0.4s ease 0.1s backwards;
+        }
+
+        .primary-button, .danger-button, .whatsapp-button {
+            padding: 14px;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .primary-button {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: var(--bg-color);
+        }
+
+        .danger-button {
+            background: linear-gradient(135deg, #FF4D4D, #FF6B6B);
+            color: var(--bg-color);
+        }
+
+        .whatsapp-button {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: var(--bg-color);
+        }
+
+        .primary-button:hover, .danger-button:hover, .whatsapp-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--shadow-color);
+            filter: brightness(1.1);
+        }
+
+        .primary-button:active, .danger-button:active, .whatsapp-button:active {
+            transform: translateY(0);
+        }
+
+        .recent-sessions {
+            margin-top: 20px;
+            text-align: left;
+            animation: slideUp 0.4s ease 0.2s backwards;
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .recent-sessions h3 {
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .sessions-list {
+            max-height: 160px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) var(--card-bg);
+        }
+
+        .sessions-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sessions-list::-webkit-scrollbar-track {
+            background: var(--card-bg);
+            border-radius: 3px;
+        }
+
+        .sessions-list::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        .session-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg-color);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .session-item:hover {
+            transform: translateX(4px);
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        .session-info {
+            flex: 1;
+        }
+
+        .session-domain {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .session-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .session-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .session-actions button {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .session-actions button:hover {
+            transform: scale(1.1);
+            background: var(--primary-color);
+            color: var(--bg-color);
+            border-color: var(--primary-color);
+        }
+
+        .status-banner {
+            padding: 12px;
+            border-radius: 16px;
+            margin: 10px 0;
+            display: none;
+            animation: slideDown 0.3s ease;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: var(--bg-color);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .loading {
+            display: none;
+            margin: 16px 0;
+        }
+
+        .loading.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--shadow-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            margin-top: 20px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            font-size: 12px;
+            animation: fadeIn 0.4s ease 0.3s backwards;
+        }
+
+        .version {
+            color: var(--primary-color);
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .instructions {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 16px;
+            margin: 16px 0;
+            text-align: left;
+            border: 1px solid var(--border-color);
+            animation: slideUp 0.4s ease 0.2s backwards;
+        }
+
+        .instructions h3 {
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .instructions li {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .instructions li:last-child {
+            margin-bottom: 0;
+        }
+
+        .help-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .help-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 300px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px var(--shadow-color);
+            animation: slideUp 0.3s ease;
+        }
+
+        .help-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .help-header h3 {
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .help-header h3::before {
+            content: "💡";
+            font-size: 20px;
+        }
+
+        .close-help {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+            transition: all 0.2s ease;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .close-help:hover {
+            color: var(--primary-color);
+            background: var(--bg-color);
+            transform: scale(1.1);
+        }
+
+        .help-steps {
+            text-align: left;
+        }
+
+        .help-steps ol {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .help-steps li {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+            position: relative;
+            padding-left: 8px;
+        }
+
+        .help-steps li:last-child {
+            margin-bottom: 0;
+        }
+
+        .help-steps li::marker {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .help-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 6px 10px;
+            border-radius: 8px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+
+        .help-link:hover {
+            color: var(--primary-hover);
+            background: var(--primary-color);
+            color: var(--bg-color);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Loading Indicator -->
+        <div class="loading">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Status Banner -->
+        <div id="statusBanner" class="status-banner" style="display: none;"></div>
+
+        <!-- Help Modal -->
+        <div id="helpModal" class="help-modal">
+            <div class="help-content">
+                <div class="help-header">
+                    <h3>How to Use</h3>
+                    <button class="close-help">×</button>
+                </div>
+                <div class="help-steps">
+                    <ol>
+                        <li>Enter your Secret ID in the input field above</li>
+                        <li>Click "Get Session" button to apply the session</li>
+                        <li>Use "Delete Cookies" to clear all sessions</li>
+                        <li>Your last 4 used tokens will be shown below</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Screen -->
+        <div id="mainScreen" class="screen">
+            <div class="header">
+                <div class="logo">
+                    <img src="icon.png" alt="Session Vault">
+                    <h1>Session Vault</h1>
+                </div>
+                <div class="header-actions">
+                    <a id="helpLink" class="help-link">How to Use</a>
+                    <button id="themeToggle" class="icon-button">🌓</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="cookieValue" placeholder="Enter Secret ID">
+                <button id="toggleSecret" class="icon-button">🔒</button>
+            </div>
+
+            <div class="button-group">
+                <button id="getCookie" class="primary-button">Get Session</button>
+                <button id="deleteCookie" class="danger-button">Delete Cookies</button>
+                <a href="https://wa.me/919244798723" target="_blank" class="whatsapp-button">
+                    <span>💬 Contact for Purchase</span>
+                </a>
+            </div>
+
+            <div class="recent-sessions">
+                <h3>Last Used Tokens</h3>
+                <div id="recentSessionsList" class="sessions-list"></div>
+            </div>
+
+            <div class="footer">
+                <span class="version">v1.0.0</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="storage.js"></script>
+    <script src="popup.js"></script>
+    <script>
+        // Help Modal Functionality
+        const helpModal = document.getElementById('helpModal');
+        const helpLink = document.getElementById('helpLink');
+        const closeHelp = document.querySelector('.close-help');
+
+        helpLink.addEventListener('click', () => {
+            helpModal.style.display = 'block';
+        });
+
+        closeHelp.addEventListener('click', () => {
+            helpModal.style.display = 'none';
+        });
+
+        helpModal.addEventListener('click', (e) => {
+            if (e.target === helpModal) {
+                helpModal.style.display = 'none';
+            }
+        });
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && helpModal.style.display === 'block') {
+                helpModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
